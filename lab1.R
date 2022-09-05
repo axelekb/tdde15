@@ -1,0 +1,8 @@
+# 1)
+library(bnlearn)
+data("asia")
+bn1 = hc(asia)
+bn2 = hc(asia, restart=1000)
+plot(bn1)
+plot(bn2)
+all.equal(cpdag(bn1),cpdag(bn2))
