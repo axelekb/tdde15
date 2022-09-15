@@ -82,5 +82,13 @@ mean(comparison[,1])
 mean(comparison[,2])
 mean(comparison[,3])
 
-# --- 6 ----------------------------------------------------------------------------------------------------------------------------------
+#smoothing is more accurate since it takes into account all of the observations
 
+# --- 6 ----------------------------------------------------------------------------------------------------------------------------------
+library(entropy)
+plot(apply(filtering, 2, entropy.empirical), type='l')
+# no clear trend in entropy given more observations
+
+# --- 7 ----------------------------------------------------------------------------------------------------------------------------------
+simulation$observation
+smoothing
