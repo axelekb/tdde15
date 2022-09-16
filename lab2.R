@@ -42,13 +42,20 @@ most_probable = viterbi(hmm, observed)
 filtering_guesses = apply(filtering, 2, which.max)
 smoothing_guesses = apply(smoothing, 2, which.max)
 
+accuracy = function(pred, true) {
+  count = 0
+  for (i in 1:length(pred)){
+    if(pred[i] == true[i]){
+      count = count + 1
+    }
+  }
+  return(count/length(true))
+}
+
 true_states = simulation$states
-cm_1 = table(true_states, filtering_guesses)
-sum(diag(cm_1))/sum(cm_1)
-cm_2 = table(true_states, smoothing_guesses)
-sum(diag(cm_2))/sum(cm_2)
-cm_3 = table(true_states, most_probable)
-sum(diag(cm_3))/sum(cm_3)
+accuracy(filtering_guesses, true_states)
+accuracy(smoothing_guesses, true_states)
+accuracy(most_probable, true_states)
 
 # --- 5 ----------------------------------------------------------------------------------------------------------------------------------
 comparison = matrix(0, nrow=10, ncol=3)
@@ -70,12 +77,9 @@ for(i in 1:10){
   smoothing_guesses = apply(smoothing, 2, which.max)
   
   true_states = simulation$states
-  cm_1 = table(true_states, filtering_guesses)
-  comparison[i,1] = sum(diag(cm_1))/sum(cm_1)
-  cm_2 = table(true_states, smoothing_guesses)
-  comparison[i,2] = sum(diag(cm_2))/sum(cm_2)
-  cm_3 = table(true_states, most_probable)
-  comparison[i,3] = sum(diag(cm_3))/sum(cm_3)
+  comparison[i,1] = accuracy(filtering_guesses, true_states)
+  comparison[i,2] = accuracy(smoothing_guesses, true_states)
+  comparison[i,3] = accuracy(most_probable, true_states)
 }
 comparison
 mean(comparison[,1])
@@ -87,8 +91,10 @@ mean(comparison[,3])
 # --- 6 ----------------------------------------------------------------------------------------------------------------------------------
 library(entropy)
 plot(apply(filtering, 2, entropy.empirical), type='l')
-# no clear trend in entropy given more observations
 
 # --- 7 ----------------------------------------------------------------------------------------------------------------------------------
-simulation$observation
-smoothing
+smoothing[,100] %*% transProbs
+
+filtering[,100]
+
+# varför är inte smoothing och filtering samma på sista? hur defineras beta på sista (x(t+1) existerar ej)?
